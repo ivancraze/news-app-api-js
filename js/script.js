@@ -62,24 +62,25 @@ const newsService = (function() {
   const apiUrl = 'https://newsapi.org/v2';
 
   return {
-    topHeadlines(country = 'ru', callback) {
-      http.get(`${apiUrl}/top-headlines?country=${country}&category=technology&apiKey=${apiKey}`, callback);
+    topHeadlines(country = 'ru', category = 'technology', callback) {
+      http.get(`${apiUrl}/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}`, callback);
     },
     everything(query, callback) {
       http.get(`${apiUrl}/everything?q=${query}&apiKey=${apiKey}`, callback);
     }
-  }
+  };
 })();
 
 // elements
 const form = document.forms['newsControls'];
 const countrySelector = form.elements['country'];
+const categorySelector = form.elements['category'];
 const searchInput = form.elements['search'];
 
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   loadNews();
-})
+});
 
 //  load materialize, func
 document.addEventListener('DOMContentLoaded', function() {
@@ -91,10 +92,11 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadNews() {
   showPreloader();
   const country = countrySelector.value;
+  const category = categorySelector.value;
   const searchText = searchInput.value;
 
   if (!searchText) {
-    newsService.topHeadlines(country, onGetResponce);
+    newsService.topHeadlines(country, category, onGetResponce);
   } else {
     newsService.everything(searchText, onGetResponce);
   }
